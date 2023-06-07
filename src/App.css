@@ -1,0 +1,11 @@
+.App {
+  text-align: center;
+}
+
+.time-btn {
+  width: 175px;
+}
+
+.active-button {
+  background: blue !important;
+}
