@@ -14,6 +14,7 @@ const options = [
 ];
 
 const AddTrainieeForm = () => {
+  const location = window.location.href.split('/')[2] 
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
   const [type, setType] = useState('javascript');
@@ -49,17 +50,14 @@ const AddTrainieeForm = () => {
     return (
       <div className="mb-3">
         <Alert variant="success">Kursant został poprawnie dodany.</Alert>
-        <Nav.Link href={`?user_uuid=${uuid}`}style={{textAlign: "center"}}>{uuid}</Nav.Link>
+        <h4 style={{textAlign: "center"}}>{location}/?user_uuid={uuid}</h4>
       </div>
     )
   }
 
   return (
     <div>
-      {status === 'error' ? 
-      <Alert variant="danger">Musisz uzupełnić wszystkie pola.</Alert> 
-      : 
-      null}
+      {status === 'error' && <Alert variant="danger">Musisz uzupełnić wszystkie pola.</Alert> }
       <Form onSubmit={submitHandler}>
         <Form.Group className="mb-3" controlId="formBasicName" >
           <Form.Label>Imię</Form.Label>
