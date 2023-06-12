@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import FullCalendar from "./FullCalendar";
 import { useFree, useInformation } from "../OdevFetch";
-import { Container, Col, Row, Card, Form, Button } from "react-bootstrap";
+import { Container, Col, Row, Card, Form, Button, Modal } from "react-bootstrap";
 import TermInterface from "./TermInterface";
 
 const AdminPanel = () => {
@@ -13,6 +13,9 @@ const AdminPanel = () => {
   } = useInformation();
 
   const [infoValue, setInfoValue] = useState(infoPayload?.data?.text);
+  const [show, setShow] = useState(false);
+  const handleClose = () => setShow(false);
+
 
   useEffect(() => {
     if (infoLoading === false) {
@@ -24,6 +27,22 @@ const AdminPanel = () => {
 
   return (
     <div>
+      <Modal
+        show={show}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Dodawanie kursanta</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          POPUP
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="primary">Dodaj</Button>
+        </Modal.Footer>
+      </Modal>
       <br />
       <Container>
         <Row>
@@ -53,9 +72,9 @@ const AdminPanel = () => {
           </Col>
           <Col>
             <Card>
-              <Card.Header>Interfejs terminu</Card.Header>
+              <Card.Header>Interfejs</Card.Header>
               <br />
-              ...inprogress
+              <Button onClick={() => setShow(true)}>Dodaj kursanta</Button>
             </Card>
           </Col>
         </Row>
