@@ -1,6 +1,7 @@
 import { Form, Button, Alert, Nav } from 'react-bootstrap';
 import { v4 as uuidv4 } from 'uuid';
 import { useState, useEffect } from 'react';
+import { CopyToClipboard } from 'react-copy-to-clipboard';
 
 const options = [
   {
@@ -20,6 +21,10 @@ const AddTrainieeForm = () => {
   const [type, setType] = useState('javascript');
   const [uuid, setUuid] = useState('');
   const [status, setStatus] = useState('');
+  const [copy, setCopy] = useState({
+    value: '',
+    copied: false
+  });
 
   const submitHandler = (event) => {
     event.preventDefault();
@@ -51,6 +56,14 @@ const AddTrainieeForm = () => {
       <div className="mb-3">
         <Alert variant="success">Kursant został poprawnie dodany.</Alert>
         <h4 style={{textAlign: "center"}}>{location}/?user_uuid={uuid}</h4>
+        <CopyToClipboard text={`${location}/?user_uuid=${uuid}`}onCopy={() => setCopy({copied: true})}>
+          <span style={{cursor: 'pointer'}}>Skopiuj</span>
+        </CopyToClipboard>
+        <br/>
+        {copy.copied &&
+        <Form.Text className="text-muted">
+          Skopiowano do schowka
+        </Form.Text>}
       </div>
     )
   }
