@@ -1,4 +1,4 @@
-import { Modal, Button } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 
 const PopupModule = ({children, handleClose, isShow}) => {
   return (
@@ -15,9 +15,6 @@ const PopupModule = ({children, handleClose, isShow}) => {
           <Modal.Body>
             {children}
           </Modal.Body>
-          <Modal.Footer>
-            <Button variant="primary">Zaakceptuj</Button>
-          </Modal.Footer>
         </Modal>
     </>
   )
