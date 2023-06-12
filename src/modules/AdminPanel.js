@@ -29,7 +29,7 @@ const AdminPanel = () => {
   return (
     <div>
       <PopupModule isShow={show} handleClose={handleClose}>
-       <AddTrainieeForm/>
+       <AddTrainieeForm close={handleClose}/>
       </PopupModule>
       <br />
       <Container>
