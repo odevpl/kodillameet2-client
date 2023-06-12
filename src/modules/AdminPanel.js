@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import FullCalendar from "./FullCalendar";
 import { useFree, useInformation } from "../OdevFetch";
-import { Container, Col, Row, Card, Form, Button, Modal } from "react-bootstrap";
+import { Container, Col, Row, Card, Form, Button } from "react-bootstrap";
+import PopupModule from "./PopupModule";
+import AddTrainieeForm from "./AddTraineeForm";
 import TermInterface from "./TermInterface";
 
 const AdminPanel = () => {
@@ -16,7 +18,6 @@ const AdminPanel = () => {
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
 
-
   useEffect(() => {
     if (infoLoading === false) {
       setInfoValue(infoPayload?.data?.text || "");
@@ -27,22 +28,9 @@ const AdminPanel = () => {
 
   return (
     <div>
-      <Modal
-        show={show}
-        onHide={handleClose}
-        backdrop="static"
-        keyboard={false}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Dodawanie kursanta</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          POPUP
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary">Dodaj</Button>
-        </Modal.Footer>
-      </Modal>
+      <PopupModule isShow={show} handleClose={handleClose}>
+       <AddTrainieeForm/>
+      </PopupModule>
       <br />
       <Container>
         <Row>

@@ -1,8 +1,25 @@
-const PopupModule = ({children}) => {
+import { Modal, Button } from 'react-bootstrap';
+
+const PopupModule = ({children, handleClose, isShow}) => {
   return (
-    <div>
-      <h1>This is popup</h1>
-    </div>
+    <>
+       <Modal
+          show={isShow}
+          onHide={handleClose}
+          backdrop="static"
+          keyboard={false}
+        >
+          <Modal.Header closeButton>
+
+          </Modal.Header>
+          <Modal.Body>
+            {children}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="primary">Zaakceptuj</Button>
+          </Modal.Footer>
+        </Modal>
+    </>
   )
 };
 

@@ -13,6 +13,7 @@ const options = [
 ];
 
 const AddTrainieeForm = () => {
+  const uuid = uuidv4()
   return (
     <div>
       <Form>
@@ -28,13 +29,13 @@ const AddTrainieeForm = () => {
           <Form.Label>Typ</Form.Label>
           <Form.Select>
             {options.map(option => 
-              <option value={option.value}>{option.name}</option> 
+              <option key={option.value} value={option.value}>{option.name}</option> 
             )}
           </Form.Select>
         </Form.Group>
         <Form.Group className="mb-3">
           <Form.Label>Disabled input</Form.Label>
-          <Form.Control placeholder={uuidv4()} disabled />
+          <Form.Control placeholder={uuid} disabled />
         </Form.Group>
         <Button variant="primary" type="submit">
           Submit
