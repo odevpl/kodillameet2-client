@@ -8,10 +8,10 @@ export const useUser = (props) => {
     isLazy: props?.isLazy,
   });
 
-  // const save = async ({ body }) => {
-  //   const data = await returnFetch({ endpoint: "term", body });
-  //   return data;
-  // };
+  const save = async ({ body }) => {
+    const data = await returnFetch({ endpoint: "user", body });
+    return data;
+  };
 
   // const remove = async ({ id }) => {
   //   const data = await returnFetch({ endpoint: `term/${id}/remove` });
@@ -22,7 +22,7 @@ export const useUser = (props) => {
     loading,
     payload,
     refetch,
-    // save,
+    save,
     // remove,
   };
 };

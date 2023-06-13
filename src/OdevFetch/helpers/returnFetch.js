@@ -11,15 +11,6 @@ export const returnFetch = async ({ endpoint, body }) => {
   })
     .then((response) => response.json())
     .then((res) => {
-      if (
-        res &&
-        res.status &&
-        res.message &&
-        !res.message.includes("ERROR-LOGS: ")
-      ) {
-        window.location.reload();
-      }
-
       return res;
     });
 
