@@ -1,7 +1,8 @@
-import { Form, Button, Alert, Nav } from 'react-bootstrap';
-import { v4 as uuidv4 } from 'uuid';
-import { useState, useEffect } from 'react';
-import { CopyToClipboard } from 'react-copy-to-clipboard';
+import { Form, Button, Alert, Nav } from "react-bootstrap";
+import { v4 as uuidv4 } from "uuid";
+import { useState, useEffect } from "react";
+import { CopyToClipboard } from "react-copy-to-clipboard";
+import { useUser } from "../OdevFetch";
 
 const options = [
   {
@@ -15,31 +16,33 @@ const options = [
 ];
 
 const AddTrainieeForm = () => {
-  const location = window.location.href.split('/')[2] 
-  const [name, setName] = useState('');
-  const [surname, setSurname] = useState('');
-  const [type, setType] = useState('javascript');
-  const [uuid, setUuid] = useState('');
-  const [status, setStatus] = useState('');
+  const location = window.location.href.split("/")[2];
+  const { save } = useUser();
+
+  const [name, setName] = useState("");
+  const [surname, setSurname] = useState("");
+  const [type, setType] = useState("javascript");
+  const [uuid, setUuid] = useState("");
+  const [status, setStatus] = useState("");
   const [copy, setCopy] = useState({
-    value: '',
+    value: "",
     copied: false
   });
 
   const submitHandler = (event) => {
     event.preventDefault();
 
-    if(name === '' || surname === '') {
-      setStatus('error');
+    if(name === "" || surname === "") {
+      setStatus("error");
     } else {
-      setStatus('success');
-      // prepared data for backend
-      const data = {
-        name,
-        surname,
-        type,
-        uuid
+      setStatus("success");
+      const body = {
+        name: `${name} ${surname}`,
+        type: type === "javascript" ? 1 : 2,
+        uuid,
+        role: 1
       };
+      save({body});
     };
   };
 
@@ -55,9 +58,8 @@ const AddTrainieeForm = () => {
     return (
       <div className="mb-3">
         <Alert variant="success">Kursant został poprawnie dodany.</Alert>
-        <h4 style={{textAlign: "center"}}>{location}/?user_uuid={uuid}</h4>
-        <CopyToClipboard text={`${location}/?user_uuid=${uuid}`}onCopy={() => setCopy({copied: true})}>
-          <span style={{cursor: 'pointer'}}>Skopiuj</span>
+        <CopyToClipboard text={`${location}/?user_uuid=${uuid}`} onCopy={() => setCopy({copied: true})}>
+          <h4 style={{textAlign: "center", cursor: "pointer"}}>{location}/?user_uuid={uuid}</h4>
         </CopyToClipboard>
         <br/>
         {copy.copied &&
@@ -70,7 +72,7 @@ const AddTrainieeForm = () => {
 
   return (
     <div>
-      {status === 'error' && <Alert variant="danger">Musisz uzupełnić wszystkie pola.</Alert> }
+      {status === "error" && <Alert variant="danger">Musisz uzupełnić wszystkie pola.</Alert> }
       <Form onSubmit={submitHandler}>
         <Form.Group className="mb-3" controlId="formBasicName" >
           <Form.Label>Imię</Form.Label>
