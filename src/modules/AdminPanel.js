@@ -4,10 +4,13 @@ import { useFree, useInformation } from "../OdevFetch";
 import { Container, Col, Row, Card, Form, Button } from "react-bootstrap";
 import PopupModule from "./PopupModule";
 import AddTrainieeForm from "./AddTraineeForm";
+import { BsFillCalendarPlusFill } from 'react-icons/bs';
+import { useWeeks } from "../OdevFetch";
 import TermInterface from "./TermInterface";
 
 const AdminPanel = () => {
   const { payload, loading } = useFree();
+  const { save } = useWeeks();
   const {
     payload: infoPayload,
     loading: infoLoading,
@@ -17,6 +20,12 @@ const AdminPanel = () => {
   const [infoValue, setInfoValue] = useState(infoPayload?.data?.text);
   const [show, setShow] = useState(false);
   const handleClose = () => setShow(false);
+
+  const weeksHandler = (e) => {
+    e.preventDefault();
+    save();
+    window.location.reload();
+  };
 
   useEffect(() => {
     if (infoLoading === false) {
@@ -61,8 +70,11 @@ const AdminPanel = () => {
           <Col>
             <Card>
               <Card.Header>Interfejs</Card.Header>
-              <br />
-              <Button onClick={() => setShow(true)}>Dodaj kursanta</Button>
+              <Card.Body>
+                <Button onClick={() => setShow(true)} className="mb-3">Dodaj kursanta</Button>
+                <br/>
+                <Button onClick={(e) => weeksHandler(e)}><BsFillCalendarPlusFill/></Button>
+              </Card.Body>
             </Card>
           </Col>
         </Row>
