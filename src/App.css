@@ -9,3 +9,11 @@
 .active-button {
   background: blue !important;
 }
+
+.color-brown {
+  background: brown !important;
+}
+
+.color-green {
+  background-color: green !important;
+}

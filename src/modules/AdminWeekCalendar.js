@@ -1,13 +1,26 @@
 import React, { useState } from "react";
 import moment from "moment";
 import { Button, Card, Container } from "react-bootstrap";
-import { useTerm } from "../OdevFetch";
+import { useTerm, useUsers } from "../OdevFetch";
 import { getUserUuidFromLink } from "../helpers";
 
-const AdminWeekCalendar = ({ events, week }) => {
+
+const AdminWeekCalendar = ({ events, week, users }) => {
   const { reserve } = useTerm({ isLazy: true });
 
-  const moment = require("moment");
+  // const moment = require("moment");
+
+  const showUsernamesByUuid = (userObject, users) => {
+    let username = "";
+    users.map(user => user.uuid === userObject.user_uuid ? username = user.name : null);
+    return username;
+  };
+
+  const showTypesByUuid = (userObject, users) => {
+    let type;
+    users.map(user => user.uuid === userObject.user_uuid ? type = user.type : null);
+    return type;
+  };
 
   const defaultState = events
     .filter((event) =>
@@ -21,12 +34,16 @@ const AdminWeekCalendar = ({ events, week }) => {
     .map((event) => ({
       date: event.date,
       id: event.id,
+      uuid: event.user_uuid,
+      name: showUsernamesByUuid(event, users),
+      type: showTypesByUuid(event, users),
       time: moment(event.time, "HH:mm:ss").format("HH:mm"),
     }));
 
   const [currentTerms, setCurrentTerms] = useState(defaultState);
   const [termsToRemoves, setTermsToRemoves] = useState([]);
   const [termsToAdd, setTermsToAdd] = useState([]);
+  console.log(currentTerms)
 
   const userUuid = getUserUuidFromLink();
 
@@ -41,6 +58,8 @@ const AdminWeekCalendar = ({ events, week }) => {
       return 0;
     });
   };
+
+
 
   const weekdaysTranslation = {
     Wed: "Środa",
@@ -77,12 +96,36 @@ const AdminWeekCalendar = ({ events, week }) => {
     );
 
     if (isSelected) {
-      console.log("IsSelected");
-      newClassName += " active-button";
+      const getType = currentTerms.map(term => term.date == date && term.time === time ? term.type : null);
+      if(getType) {
+        getType.map(type => type === 1 ? newClassName = " color-green" : type === 2 ? newClassName = " color-brown" : null)
+      }
     }
 
     return newClassName;
   };
+
+  const getTraineeName = ({hour, minute, index}) => {
+    const date = moment(week.first_week_date, "yyyy-MM-DD")
+      .add(index, "day")
+      .format("yyyy-MM-DD");
+
+    const time = `${hour}:${minute}`;
+
+    const isSelected = currentTerms.some(
+      (event) => event.date == date && event.time == time
+    );
+
+    let name;
+    if (isSelected) {
+      const getName = currentTerms.map(term => term.date == date && term.time === time ? term.name : null);
+      if(getName) {
+        getName.map(x => x ? name = `${x}` : null)
+      }
+    }
+    return name;
+  }
+
 
   const hourButtons = (weekday, index) => {
     return hours.flatMap((hour) =>
@@ -98,7 +141,15 @@ const AdminWeekCalendar = ({ events, week }) => {
           onClick={() => {
             onHourButtonClick({ weekday, index, hour, minute });
           }}
-        >{`${hour}:${minute}`}</Button>
+        >{getTraineeName({
+          hour,
+          minute,
+          index,
+        }) ? getTraineeName({
+          hour,
+          minute,
+          index,
+        }) : `${hour}:${minute}`}</Button>
       ))
     );
   };

@@ -1,10 +1,13 @@
 import WeekCalendar from "./WeekCalendar";
 import moment from "moment";
-import { useWeeks } from "../OdevFetch";
+import { useWeeks, useUsers } from "../OdevFetch";
 import AdminWeekCalendar from "./AdminWeekCalendar";
 
 const FullCalendar = ({ events, isAdmin }) => {
   const { payload, loading } = useWeeks();
+  const { payload: getUsers } = useUsers();
+  const users = getUsers ? getUsers.data.results : [];
+
 
   if (loading) return <div>Loading</div>;
 
@@ -27,7 +30,7 @@ const FullCalendar = ({ events, isAdmin }) => {
 
   if (isAdmin) {
     return payload.data.results.map((week) => {
-      return <AdminWeekCalendar events={events} week={week} />;
+      return <AdminWeekCalendar events={events} week={week} users={users}/>;
     });
   }
 
