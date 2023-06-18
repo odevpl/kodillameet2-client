@@ -5,11 +5,13 @@ import AdminWeekCalendar from "./AdminWeekCalendar";
 
 const FullCalendar = ({ events, isAdmin }) => {
   const { payload, loading } = useWeeks();
-  const { payload: getUsers } = useUsers();
+  const { payload: getUsers, loading: userLoading } = useUsers();
+
+
+  if (loading && userLoading) return <div>Loading</div>;
+
+
   const users = getUsers ? getUsers.data.results : [];
-
-
-  if (loading) return <div>Loading</div>;
 
   const weekNumber = [
     ...new Set(events.map((event) => moment(event.date).isoWeek())),

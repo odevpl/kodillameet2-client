@@ -9,10 +9,9 @@ import { useWeeks } from "../OdevFetch";
 import TermInterface from "./TermInterface";
 
 const AdminPanel = () => {
-  const { payload, loading } = useReserved();
-  const { save } = useWeeks();
-  const reserved = payload && payload.data.results;
-
+  const { payload, reservedLoading } = useReserved();
+  const { save, weeksLoading } = useWeeks();
+  
   const {
     payload: infoPayload,
     loading: infoLoading,
@@ -35,7 +34,7 @@ const AdminPanel = () => {
     }
   }, [infoLoading]);
 
-  if (infoLoading) return <div>Loading</div>;
+  if (infoLoading && reservedLoading && weeksLoading) return <div>Loading</div>;
 
   return (
     <div>
@@ -82,7 +81,7 @@ const AdminPanel = () => {
         </Row>
         <br />
         <Row>
-          <FullCalendar events={reserved} isAdmin={true} />
+          {payload?.data?.results && <FullCalendar events={payload?.data?.results || []} isAdmin={true} />}
         </Row>
       </Container>
     </div>

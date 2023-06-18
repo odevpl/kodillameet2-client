@@ -8,17 +8,15 @@ import { getUserUuidFromLink } from "../helpers";
 const AdminWeekCalendar = ({ events, week, users }) => {
   const { reserve } = useTerm({ isLazy: true });
 
-  // const moment = require("moment");
-
   const showUsernamesByUuid = (userObject, users) => {
-    let username = "";
-    users.map(user => user.uuid === userObject.user_uuid ? username = user.name : null);
-    return username;
+    const foundUser =  users.find(user => user.uuid === userObject.user_uuid);
+    const userName = foundUser.name;
+    return userName;
   };
 
   const showTypesByUuid = (userObject, users) => {
-    let type;
-    users.map(user => user.uuid === userObject.user_uuid ? type = user.type : null);
+    const foundType = users.find(user => user.uuid === userObject.user_uuid);
+    const type = foundType.type;
     return type;
   };
 
@@ -43,7 +41,6 @@ const AdminWeekCalendar = ({ events, week, users }) => {
   const [currentTerms, setCurrentTerms] = useState(defaultState);
   const [termsToRemoves, setTermsToRemoves] = useState([]);
   const [termsToAdd, setTermsToAdd] = useState([]);
-  console.log(currentTerms)
 
   const userUuid = getUserUuidFromLink();
 
@@ -58,8 +55,6 @@ const AdminWeekCalendar = ({ events, week, users }) => {
       return 0;
     });
   };
-
-
 
   const weekdaysTranslation = {
     Wed: "Środa",
@@ -88,21 +83,18 @@ const AdminWeekCalendar = ({ events, week, users }) => {
       .add(index, "day")
       .format("yyyy-MM-DD");
 
-    let newClassName = "";
     const time = `${hour}:${minute}`;
 
-    const isSelected = currentTerms.some(
+    const findedTerm = currentTerms.find(
       (event) => event.date == date && event.time == time
     );
-
-    if (isSelected) {
-      const getType = currentTerms.map(term => term.date == date && term.time === time ? term.type : null);
-      if(getType) {
-        getType.map(type => type === 1 ? newClassName = " color-green" : type === 2 ? newClassName = " color-brown" : null)
-      }
+   
+    const CLASSES_NAMES = {
+      1: 'button-js',
+      2: 'button-python'
     }
 
-    return newClassName;
+    return CLASSES_NAMES?.[findedTerm?.type] || '';
   };
 
   const getTraineeName = ({hour, minute, index}) => {
@@ -112,18 +104,11 @@ const AdminWeekCalendar = ({ events, week, users }) => {
 
     const time = `${hour}:${minute}`;
 
-    const isSelected = currentTerms.some(
+    const term = currentTerms.find(
       (event) => event.date == date && event.time == time
     );
 
-    let name;
-    if (isSelected) {
-      const getName = currentTerms.map(term => term.date == date && term.time === time ? term.name : null);
-      if(getName) {
-        getName.map(x => x ? name = `${x}` : null)
-      }
-    }
-    return name;
+    return term?.name || '';
   }
 
 
@@ -145,11 +130,7 @@ const AdminWeekCalendar = ({ events, week, users }) => {
           hour,
           minute,
           index,
-        }) ? getTraineeName({
-          hour,
-          minute,
-          index,
-        }) : `${hour}:${minute}`}</Button>
+        }) || `${hour}:${minute}`}</Button>
       ))
     );
   };
