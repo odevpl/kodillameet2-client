@@ -1,40 +1,25 @@
 import WeekCalendar from "./WeekCalendar";
-import moment from "moment";
-import { useWeeks } from "../OdevFetch";
+import { useWeeks, useReserved } from "../OdevFetch";
 import AdminWeekCalendar from "./AdminWeekCalendar";
 
-const FullCalendar = ({ events, isAdmin }) => {
+const FullCalendar = ({ isAdmin }) => {
   const { payload, loading } = useWeeks();
+  const { payload: reservedPayload, loading: reservedLoading } = useReserved();
 
-  if (loading) return <div>Loading</div>;
+  if (loading && reservedLoading) return <div>Loading</div>;
 
-  const weekNumber = [
-    ...new Set(events.map((event) => moment(event.date).isoWeek())),
-  ];
-
-  function filterEventsByWeek(events, weekNumber) {
-    const wednesday = moment().week(weekNumber).weekday(2).format("YYYY-MM-DD");
-    const nextTuesday = moment()
-      .week(weekNumber + 1)
-      .weekday(2)
-      .subtract(1, "day")
-      .format("YYYY-MM-DD");
-
-    return events.filter((event) => {
-      return moment(event.date).isBetween(wednesday, nextTuesday, null, "[]");
-    });
-  }
+  const events = reservedPayload?.data?.results || [];
 
   if (isAdmin) {
-    return payload.data.results.map((week) => {
-      return <AdminWeekCalendar events={events} week={week} />;
+    return payload.data.results.map((week, index) => {
+      return <AdminWeekCalendar events={events} week={week} key={index}/>;
     });
   }
 
   return (
     <>
-      {payload.data.results.map((week) => {
-        return <WeekCalendar events={events} week={week} />;
+      {payload.data.results.map((week, index) => {
+        return <WeekCalendar events={events} week={week} key={index}/>;
       })}
     </>
   );

@@ -9,3 +9,11 @@
 .active-button {
   background: blue !important;
 }
+
+.button-python {
+  background: brown !important;
+}
+
+.button-js {
+  background: green !important;
+}
