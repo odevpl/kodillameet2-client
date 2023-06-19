@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
 import FullCalendar from "./FullCalendar";
-import { useInformation, useReserved } from "../OdevFetch";
+import { useInformation } from "../OdevFetch";
 import { Container, Col, Row, Card, Form, Button } from "react-bootstrap";
 import PopupModule from "./PopupModule";
 import AddTrainieeForm from "./AddTraineeForm";
 import { BsFillCalendarPlusFill } from 'react-icons/bs';
 import { useWeeks } from "../OdevFetch";
-import TermInterface from "./TermInterface";
 
 const AdminPanel = () => {
-  const { payload, reservedLoading } = useReserved();
   const { save, weeksLoading } = useWeeks();
   
   const {
@@ -34,7 +32,7 @@ const AdminPanel = () => {
     }
   }, [infoLoading]);
 
-  if (infoLoading && reservedLoading && weeksLoading) return <div>Loading</div>;
+  if (infoLoading && weeksLoading) return <div>Loading</div>;
 
   return (
     <div>
@@ -81,7 +79,7 @@ const AdminPanel = () => {
         </Row>
         <br />
         <Row>
-          {payload?.data?.results && <FullCalendar events={payload?.data?.results || []} isAdmin={true} />}
+          <FullCalendar isAdmin={true} />
         </Row>
       </Container>
     </div>
