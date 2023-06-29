@@ -9,7 +9,7 @@ import { useWeeks } from "../OdevFetch";
 
 const AdminPanel = () => {
   const { save, weeksLoading } = useWeeks();
-  
+
   const {
     payload: infoPayload,
     loading: infoLoading,
@@ -79,7 +79,7 @@ const AdminPanel = () => {
         </Row>
         <br />
         <Row>
-          <FullCalendar isAdmin={true} />
+          <FullCalendar isAdmin={true}/>
         </Row>
       </Container>
     </div>
