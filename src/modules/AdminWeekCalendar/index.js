@@ -1,29 +1,52 @@
 import React, { useState, useEffect } from "react";
 import moment from "moment";
-import { Button, Card, Container } from "react-bootstrap";
-import { useTerm, useUsers } from "../../OdevFetch";
+import { Card, Container } from "react-bootstrap";
+import { useTerm, useUsers, useFree } from "../../OdevFetch";
 import { getUserUuidFromLink } from "../../helpers";
 import { sortEventsByTime, weekdaysTranslation, getUserProperty, weekdays } from "./helpers";
 import HourButton from "./modules/HourButton";
 
-
 const AdminWeekCalendar = ({ events, week }) => {
   const { reserve } = useTerm({ isLazy: true });
   const { payload: usersPayload, loading: userLoading } = useUsers();
+  const { 
+    payload: freePayload, 
+    loading: freeLoading,
+    refetch
+   } = useFree();
 
   const [currentTerms, setCurrentTerms] = useState([]);
+  const [freeSlotsTerms, setFreeSlotsTerms] = useState([]);
   const [termsToRemoves, setTermsToRemoves] = useState([]);
   const [termsToAdd, setTermsToAdd] = useState([]);
 
   useEffect(() => {
-    if(!userLoading) {
+    if(!userLoading && !freeLoading) {
+      setFreeSlotsTerms(getFreeSlotsDefaultState());
       setCurrentTerms(getDefaultState());
     }
-  }, [userLoading]);
+  }, [userLoading, freePayload]);
 
-  if(userLoading) return <>LOADING...</>;
+  if(userLoading || freeLoading) return <>LOADING...</>;
 
   const users = usersPayload?.data?.results;
+  const freeTerms = freePayload?.data?.results
+
+  const getFreeSlotsDefaultState = () => freeTerms
+  .filter((event) =>
+    moment(event.date).isBetween(
+      week.first_week_date,
+      week.last_week_date,
+      null,
+      "[]"
+    )
+  )
+  .map((event) => ({
+    date: event.date,
+    id: event.id,
+    type: 3,
+    time: moment(event.time, "HH:mm:ss").format("HH:mm"),
+  })); 
 
   const getDefaultState = () => events
     .filter((event) =>
@@ -54,7 +77,7 @@ const AdminWeekCalendar = ({ events, week }) => {
   const getHourButtons = (weekday, index) => {
     return hours.flatMap((hour) =>
       minutes.map((minute) => (
-        <HourButton {...{weekday, index, hour, minute, week, currentTerms}} key={hour + minute}/>
+        <HourButton {...{weekday, index, hour, minute, week, currentTerms, freeSlotsTerms, refetch}} key={hour + minute}/>
       ))
     );
   };

@@ -1,12 +1,27 @@
 import { Button } from 'react-bootstrap';
 import moment from 'moment';
+import { useTerm, useFree } from '../../../OdevFetch';
 
-const HourButton = ({weekday, index, hour, minute, week, currentTerms}) => {
+const HourButton = ({weekday, index, hour, minute, week, currentTerms, freeSlotsTerms, refetch}) => {
+  const { save, remove } = useTerm({isLazy: true});
 
-  const onHourButtonClick = ({ weekday, index, hour, minute }) => {
-    // Sun 4 7 00
-    console.log({ currentTerms });
-    console.log(weekday, index, hour, minute);
+  const onHourButtonClick = async ({ index, hour, minute }) => {
+    const chosenDate = moment(week.first_week_date).add(index, "days").format("YYYY-MM-DD");
+    const chosenHour = `${hour}:${minute}`;
+
+    const activeTerm = freeSlotsTerms.find(event => event.date == chosenDate && event.time == chosenHour);
+    if(activeTerm) {
+      await remove({id: activeTerm.id});
+      refetch();
+    } else {    
+      const body = {
+        date: chosenDate,
+        time: chosenHour
+      };
+      await save({body});
+      refetch();
+    }
+
   };
 
   const getTermByTimeAndIndex = ({ hour, minute, index }) => {
@@ -15,11 +30,11 @@ const HourButton = ({weekday, index, hour, minute, week, currentTerms}) => {
       .format("yyyy-MM-DD");
 
     const time = `${hour}:${minute}`;
-
     const findedTerm = currentTerms.find(
       (event) => event.date == date && event.time == time
     );
 
+    if(!findedTerm) return freeSlotsTerms.find(event => event.date == date && event.time == time);
     return findedTerm;
   };
 
@@ -28,7 +43,8 @@ const HourButton = ({weekday, index, hour, minute, week, currentTerms}) => {
    
     const CLASSES_NAMES = {
       1: 'button-js',
-      2: 'button-python'
+      2: 'button-python',
+      3: 'active-button'
     };
 
     return CLASSES_NAMES?.[findedTerm?.type] || '';
@@ -39,7 +55,6 @@ const HourButton = ({weekday, index, hour, minute, week, currentTerms}) => {
     return findedTerm?.name || '';
   };
 
-
   return (
     <Button
       className={`time-btn ${getButtonClass({
@@ -49,7 +64,7 @@ const HourButton = ({weekday, index, hour, minute, week, currentTerms}) => {
       })}`}
       key={`${hour}:${minute}`}
       variant="secondary"
-      onClick={() => {
+      onClick={(e) => {
         onHourButtonClick({ weekday, index, hour, minute });
       }}
     >{getTraineeName({
